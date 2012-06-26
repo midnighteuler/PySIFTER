@@ -1,0 +1,48 @@
+# Description: Instructions for setting up protein function prediction prototype.
+#
+# Author: Michael L. Souza
+# Date: Jan. 25, 2012
+#
+
+The following are used at the time of writing:
+ Python 2.7.2
+ Python Libraries:
+	
+ Taverna 2.3.0 (available on /lab/app/taverna/taverna_workbench_linux_64bit/taverna-workbench-2.3.0)
+ Read/Write access to a MySQL server.
+	The database to use is specified in global_settings.py
+	For setup need to be able to create/drop tables, and insert/update/select from tables.
+ 
+Setting up:
+	Edit "global_settings.py"
+	
+	$ cd /path/to/db_data_location
+	
+	Set up PFam:
+		$ wget ftp://ftp.sanger.ac.uk/pub/databases/Pfam/releases/Pfam26.0/database_files/pfamseq.sql.gz && gunzip pfamseq.sql.gz
+		$ wget ftp://ftp.sanger.ac.uk/pub/databases/Pfam/releases/Pfam26.0/database_files/pfamseq.txt.gz && gunzip pfamseq.txt.gz 
+		$ wget ftp://ftp.sanger.ac.uk/pub/databases/Pfam/releases/Pfam26.0/database_files/pfamA_HMM.sql.gz && gunzip pfamA_HMM.sql.gz
+		$ wget ftp://ftp.sanger.ac.uk/pub/databases/Pfam/releases/Pfam26.0/database_files/pfamA_HMM.txt.gz && gunzip pfamA_HMM.txt.gz
+		$ wget ftp://ftp.sanger.ac.uk/pub/databases/Pfam/releases/Pfam26.0/Pfam-A.hmm.gz && gunzip Pfam-A.hmm.gz
+		$ /path/to/hmmr3/hmmpress /path/to/Pfam-A.hmm
+		$ python ./import_pfam_to_mysql.py 
+	
+	Set up UniProt:
+		$ wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz
+		$ gunzip /path/to/idmapping_selected.tab.gz
+		$ wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniparc/uniparc_all.xml.gz
+		$ gunzip uniparc_all.xml.gz
+		$ python ./import_id_mappings_to_mysql.py 
+		$ python ./import_uniparc_to_mysql.py
+	
+	Set up GO and GO Annotations:
+		$ wget ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/gp_association.goa_uniprot.gz && gp_association.goa_uniprot.gz
+		$ import_goa_to_mysql.py
+
+
+
+------------------------------------------------------------------------
+Tips:
+	These are unused, but very useful for extension:
+	$ wget http://www.geneontology.org/external2go/ec2go
+	$ wget http://archive.geneontology.org/latest-termdb/go_daily-termdb-tables.tar.gz
